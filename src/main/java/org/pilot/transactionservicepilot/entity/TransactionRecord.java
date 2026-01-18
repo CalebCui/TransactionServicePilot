@@ -52,6 +52,9 @@ public class TransactionRecord {
 
     private Integer retryCount = 0;
 
+    // Next time this record is eligible to be retried. Null means immediate eligibility.
+    private Instant nextAttemptAt;
+
     private Instant timestamp;
 
 }

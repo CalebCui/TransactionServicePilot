@@ -9,7 +9,7 @@ import org.pilot.transactionservicepilot.service.BalanceManager;
 import org.pilot.transactionservicepilot.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@TestPropertySource(properties = "spring.profiles.active=${perf.profile:local}")
 public class TransactionPerformanceTest {
 
     @Autowired
@@ -41,6 +41,7 @@ public class TransactionPerformanceTest {
     /**
      * Configurable performance test.
      * System properties (optional):
+     *  - perf.profile (default local)
      *  - perf.threads (default 10)
      *  - perf.txsPerThread (default 100)
      *  - perf.amount (default 1.00)
