@@ -1,0 +1,6 @@
+apiVersion: v2
+name: transaction-service-pilot
+description: Helm chart for Transaction Service Pilot
+type: application
+version: 0.1.0
+appVersion: "0.0.1"

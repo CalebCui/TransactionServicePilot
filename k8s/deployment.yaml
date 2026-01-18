@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-service-pilot
+  labels:
+    app: transaction-service-pilot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: transaction-service-pilot
+  template:
+    metadata:
+      labels:
+        app: transaction-service-pilot
+    spec:
+      containers:
+        - name: transaction-service-pilot
+          image: ghcr.io/your-org/transaction-service-pilot:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: transaction-service-config
+            - secretRef:
+                name: transaction-service-secret
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx512m"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service
+  labels:
+    app: transaction-service-pilot
+spec:
+  type: ClusterIP
+  selector:
+    app: transaction-service-pilot
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transaction-service-config
+data:
+  SPRING_PROFILES_ACTIVE: "k8s,prod"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/Transactions?useSSL=false&serverTimezone=UTC"
+  SPRING_DATASOURCE_USERNAME: "root"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
+  SPRING_REDIS_HOST: "redis"
+  SPRING_REDIS_PORT: "6379"
+  APP_SYNC_BASE_BACKOFF_SECONDS: "5"
+  APP_SYNC_MAX_RETRIES: "3"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: transaction-service-secret
+type: Opaque
+stringData:
+  spring_datasource_password: "REPLACE_WITH_DB_PASSWORD"
+  spring_redis_password: ""

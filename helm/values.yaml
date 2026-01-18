@@ -1,0 +1,26 @@
+image:
+  repository: ghcr.io/your-org/transaction-service-pilot
+  tag: latest
+  pullPolicy: IfNotPresent
+replicaCount: 2
+service:
+  type: ClusterIP
+  port: 80
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+env:
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/Transactions?useSSL=false&serverTimezone=UTC"
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: changeme
+  SPRING_REDIS_HOST: redis
+  SPRING_REDIS_PORT: 6379
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  cpuTarget: 60
