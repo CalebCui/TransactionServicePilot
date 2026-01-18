@@ -1,5 +1,6 @@
 package org.pilot.transactionservicepilot.service;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.pilot.transactionservicepilot.dto.TransactionRequest;
 import org.pilot.transactionservicepilot.dto.TransactionResponse;
 import org.pilot.transactionservicepilot.entity.Account;
@@ -8,11 +9,15 @@ import org.pilot.transactionservicepilot.repository.AccountRepository;
 import org.pilot.transactionservicepilot.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.OptimisticLockException;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +30,30 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
 
-    private static final int MAX_RETRIES = 3;
+    @Value("${app.sync.base-backoff-seconds:5}")
+    private long baseBackoffSeconds = 5L;
+
+    @Value("${app.sync.max-retries:3}")
+    private int maxRetries = 3;
+
+    // keep legacy constant for backward compatibility in code areas that expect a constant (not strictly required)
+    private static final int MAX_RETRIES = -1; // deprecated; use `maxRetries` instance field
+
+    private MeterRegistry meterRegistry;
+
+    // optional injection by Spring; tests that construct TransactionService directly may leave this null
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    public void setMeterRegistry(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public TransactionService(BalanceManager balanceManager, TransactionRepository transactionRepository, AccountRepository accountRepository, MeterRegistry meterRegistry) {
+        this.balanceManager = balanceManager;
+        this.transactionRepository = transactionRepository;
+        this.accountRepository = accountRepository;
+        this.meterRegistry = meterRegistry;
+    }
 
     public TransactionService(BalanceManager balanceManager, TransactionRepository transactionRepository, AccountRepository accountRepository) {
         this.balanceManager = balanceManager;
@@ -110,11 +138,19 @@ public class TransactionService {
             rec.setStatus("FAILED");
             rec.setError(e.getMessage());
             rec.setProcessedAt(Instant.now());
-            // increment retry count
-            Integer rc = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
+            // increment retry count and schedule next attempt or mark permanent
+            int rc = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
             rec.setRetryCount(rc + 1);
+            if (rec.getRetryCount() >= maxRetries) {
+                rec.setStatus("FAILED");
+                recordPermanentFailure(rec);
+                rec.setNextAttemptAt(null);
+                log.error("Permanent failure processing transaction {} after {} retries: {}", req.getTxId(), rec.getRetryCount(), e.toString());
+            } else {
+                rec.setNextAttemptAt(calculateNextAttempt(Instant.now(), rec.getRetryCount()));
+                log.error("Transaction {} failed during process, scheduled retry {} at {}: {}", req.getTxId(), rec.getRetryCount(), rec.getNextAttemptAt(), e.getMessage());
+            }
             transactionRepository.save(rec);
-            log.error("Transaction {} failed during process: {}", req.getTxId(), e.getMessage());
             return new TransactionResponse(req.getTxId(), "FAILED", null, e.getMessage());
         }
     }
@@ -180,10 +216,18 @@ public class TransactionService {
             rec.setStatus("FAILED");
             rec.setError(e.getMessage());
             rec.setProcessedAt(Instant.now());
-            Integer rc = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
+            int rc = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
             rec.setRetryCount(rc + 1);
+            if (rec.getRetryCount() >= maxRetries) {
+                rec.setStatus("FAILED");
+                recordPermanentFailure(rec);
+                rec.setNextAttemptAt(null);
+                log.error("Permanent failure processing transfer {} after {} retries: {}", req.getTxId(), rec.getRetryCount(), e.toString());
+            } else {
+                rec.setNextAttemptAt(calculateNextAttempt(Instant.now(), rec.getRetryCount()));
+                log.error("Transfer {} failed, scheduled retry {} at {}: {}", req.getTxId(), rec.getRetryCount(), rec.getNextAttemptAt(), e.getMessage());
+            }
             transactionRepository.save(rec);
-            log.error("Transfer {} failed: {}", req.getTxId(), e.getMessage());
             return new TransactionResponse(req.getTxId(), "FAILED", null, e.getMessage());
         }
     }
@@ -191,16 +235,53 @@ public class TransactionService {
     private TransactionResponse processTransferWithDb(TransactionRequest req, Long src, Long dst) {
         // Fallback DB-only path (no Redis reservations)
         try {
-            // Try to atomically debit source
-            int debitUpdated = accountRepository.debitIfAvailable(src, req.getAmount());
-            if (debitUpdated == 0) {
-                return new TransactionResponse(req.getTxId(), "FAILED", null, "Insufficient funds or concurrent modification");
+            // Use JPA entity updates (optimistic locking via @Version on Account)
+            Optional<Account> srcOpt = accountRepository.findById(src);
+            Optional<Account> dstOpt = accountRepository.findById(dst);
+            if (srcOpt.isEmpty() || dstOpt.isEmpty()) {
+                return new TransactionResponse(req.getTxId(), "FAILED", null, "Source or destination account not found");
             }
-            int creditUpdated = accountRepository.credit(dst, req.getAmount());
-            if (creditUpdated == 0) {
-                // improbable: credit failed, try to refund debit (best effort)
-                accountRepository.credit(src, req.getAmount());
-                return new TransactionResponse(req.getTxId(), "FAILED", null, "Credit failed after debit");
+            Account srcAcc = srcOpt.get();
+            Account dstAcc = dstOpt.get();
+
+            // check availability
+            if (srcAcc.getAvailableBalance().compareTo(req.getAmount()) < 0) {
+                return new TransactionResponse(req.getTxId(), "FAILED", null, "Insufficient funds");
+            }
+
+            // perform updates in-memory and save; JPA will perform optimistic locking
+            srcAcc.setAvailableBalance(srcAcc.getAvailableBalance().subtract(req.getAmount()));
+            srcAcc.setBalance(srcAcc.getBalance().subtract(req.getAmount()));
+            srcAcc.setUpdatedAt(Instant.now());
+
+            dstAcc.setBalance(dstAcc.getBalance().add(req.getAmount()));
+            dstAcc.setUpdatedAt(Instant.now());
+
+            try {
+                accountRepository.save(srcAcc);
+                accountRepository.save(dstAcc);
+            } catch (OptimisticLockException | OptimisticLockingFailureException ole) {
+                // treat as transient: record retry and schedule backoff
+                TransactionRecord rec = new TransactionRecord();
+                rec.setTxId(req.getTxId());
+                rec.setSourceAccountId(src);
+                rec.setDestinationAccountId(dst);
+                rec.setType("TRANSFER");
+                rec.setAmount(req.getAmount());
+                rec.setCurrency(req.getCurrency());
+                rec.setStatus("FAILED");
+                rec.setProcessedAt(Instant.now());
+                rec.setError("Optimistic lock failure: " + ole.getMessage());
+                rec.setRetryCount(1);
+                if (rec.getRetryCount() >= maxRetries) {
+                    recordPermanentFailure(rec);
+                    rec.setNextAttemptAt(null);
+                } else {
+                    rec.setNextAttemptAt(calculateNextAttempt(Instant.now(), rec.getRetryCount()));
+                }
+                transactionRepository.save(rec);
+                log.warn("Optimistic lock during transfer {}: {}", req.getTxId(), ole.getMessage());
+                return new TransactionResponse(req.getTxId(), "FAILED", null, "Optimistic lock");
             }
 
             TransactionRecord rec = new TransactionRecord();
@@ -225,7 +306,7 @@ public class TransactionService {
 
     private TransactionResponse processWithDbFallback(TransactionRequest req, Account account) {
         try {
-            // direct DB update
+            // Use JPA entity updates with optimistic locking
             TransactionRecord rec = new TransactionRecord();
             rec.setTxId(req.getTxId());
             rec.setAccountId(account.getId());
@@ -243,24 +324,17 @@ public class TransactionService {
                     transactionRepository.save(rec);
                     return new TransactionResponse(req.getTxId(), "FAILED", null, "Insufficient funds");
                 }
-                int updated = accountRepository.debitIfAvailable(account.getId(), req.getAmount());
-                if (updated == 0) {
-                    rec.setStatus("FAILED");
-                    rec.setProcessedAt(Instant.now());
-                    rec.setError("Concurrent modification or insufficient funds");
-                    transactionRepository.save(rec);
-                    return new TransactionResponse(req.getTxId(), "FAILED", null, "Concurrent modification or insufficient funds");
-                }
+                // modify entity and save (optimistic locking via @Version)
+                account.setAvailableBalance(account.getAvailableBalance().subtract(req.getAmount()));
+                account.setBalance(account.getBalance().subtract(req.getAmount()));
+                account.setUpdatedAt(Instant.now());
+                accountRepository.save(account);
             } else {
-                int updated = accountRepository.credit(account.getId(), req.getAmount());
-                if (updated == 0) {
-                    rec.setStatus("FAILED");
-                    rec.setProcessedAt(Instant.now());
-                    rec.setError("Credit failed");
-                    transactionRepository.save(rec);
-                    return new TransactionResponse(req.getTxId(), "FAILED", null, "Credit failed");
-                }
+                account.setBalance(account.getBalance().add(req.getAmount()));
+                account.setUpdatedAt(Instant.now());
+                accountRepository.save(account);
             }
+
             rec.setStatus("COMMITTED");
             rec.setProcessedAt(Instant.now());
             transactionRepository.save(rec);
@@ -276,27 +350,39 @@ public class TransactionService {
     // New: reprocess pending/failed transactions (called by scheduler)
     @Transactional
     public void reprocessPending() {
-        List<String> statuses = List.of("PENDING", "FAILED");
-        List<TransactionRecord> list = transactionRepository.findByStatusIn(statuses);
-        for (TransactionRecord rec : list) {
+        // process PENDING or FAILED (retryable) transactions, but respect exponential backoff
+        List<String> retryableStatuses = Arrays.asList("PENDING", "FAILED");
+        List<TransactionRecord> candidates = transactionRepository.findRetryable(retryableStatuses, Instant.now());
+
+        for (TransactionRecord rec : candidates) {
             try {
+                // skip if someone else processed it
                 if ("COMMITTED".equalsIgnoreCase(rec.getStatus())) continue;
 
-                Integer retries = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
-                if (retries >= MAX_RETRIES) {
-                    rec.setStatus("PERMANENTLY_FAILED");
-                    rec.setProcessedAt(Instant.now());
-                    transactionRepository.save(rec);
-                    // Log permanent failure (user requested logging instead of requeue)
-                    log.error("Transaction {} reached max retries ({}). Marked PERMANENTLY_FAILED.", rec.getTxId(), retries);
+                // eligibility guard (in case nextAttemptAt was set after query)
+                Instant now = Instant.now();
+                if (rec.getNextAttemptAt() != null && rec.getNextAttemptAt().isAfter(now)) {
                     continue;
                 }
+
+                int retries = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
 
                 Optional<Account> accountOpt = accountRepository.findById(rec.getAccountId());
                 if (accountOpt.isEmpty()) {
                     rec.setRetryCount(retries + 1);
                     rec.setError("Account not found");
                     rec.setProcessedAt(Instant.now());
+                    if (rec.getRetryCount() >= maxRetries) {
+                        rec.setStatus("FAILED");
+                        // permanent failure: log, record metric and do not reschedule
+                        log.error("Permanent failure processing transaction {}: account {} not found after {} retries", rec.getTxId(), rec.getAccountId(), rec.getRetryCount());
+                        // increment permanent failure metric so monitoring/test can observe it
+                        recordPermanentFailure(rec);
+                        rec.setNextAttemptAt(null);
+                    } else {
+                        // schedule next attempt
+                        rec.setNextAttemptAt(calculateNextAttempt(now, rec.getRetryCount()));
+                    }
                     transactionRepository.save(rec);
                     continue;
                 }
@@ -310,62 +396,81 @@ public class TransactionService {
                             if (updated == 0) throw new RuntimeException("Insufficient funds or concurrent modification");
                         } else {
                             int updated = accountRepository.credit(account.getId(), rec.getAmount());
-                            if (updated == 0) throw new RuntimeException("DB commit failed");
+                            if (updated == 0) throw new RuntimeException("Concurrent modification on credit");
                         }
-                        account.setUpdatedAt(Instant.now());
-                        accountRepository.save(account);
 
-                        rec.setStatus("COMMITTED");
-                        rec.setProcessedAt(Instant.now());
-                        transactionRepository.save(rec);
-
+                        // successful
                         balanceManager.commit(account.getId(), rec.getAmount(), rec.getTxId());
-                    } catch (Exception e) {
-                        balanceManager.rollback(account.getId(), rec.getAmount(), rec.getTxId());
-                        rec.setRetryCount(retries + 1);
-                        rec.setError("DB commit failed: " + e.getMessage());
-                        rec.setProcessedAt(Instant.now());
-                        transactionRepository.save(rec);
-                    }
-                } else if (reserveResult == BalanceManager.ReserveResult.INSUFFICIENT_FUNDS) {
-                    rec.setRetryCount(retries + 1);
-                    rec.setError("Insufficient funds");
-                    rec.setProcessedAt(Instant.now());
-                    transactionRepository.save(rec);
-                } else if (reserveResult == BalanceManager.ReserveResult.NO_ACCOUNT) {
-                    rec.setRetryCount(retries + 1);
-                    rec.setError("Account not in cache");
-                    rec.setProcessedAt(Instant.now());
-                    transactionRepository.save(rec);
-                } else {
-                    // Redis error: fallback to DB update
-                    TransactionRequest req = new TransactionRequest();
-                    req.setTxId(rec.getTxId());
-                    req.setAccountId(rec.getAccountId());
-                    req.setType(rec.getType());
-                    req.setAmount(rec.getAmount());
-                    req.setCurrency(rec.getCurrency());
-
-                    TransactionResponse resp = processWithDbFallback(req, account);
-                    if ("COMMITTED".equalsIgnoreCase(resp.getStatus())) {
                         rec.setStatus("COMMITTED");
                         rec.setProcessedAt(Instant.now());
+                        rec.setError(null);
+                        rec.setNextAttemptAt(null);
                         transactionRepository.save(rec);
-                    } else {
+
+                    } catch (Exception e) {
+                        // failure when trying to apply to DB
                         rec.setRetryCount(retries + 1);
-                        rec.setError(resp.getError());
+                        rec.setError(e.getMessage());
                         rec.setProcessedAt(Instant.now());
+                        if (rec.getRetryCount() >= maxRetries) {
+                            rec.setStatus("FAILED");
+                            // permanent failure: log as event and do not requeue
+                            log.error("Permanent failure processing transaction {} account {} after {} retries: {}", rec.getTxId(), account.getId(), rec.getRetryCount(), e.toString());
+                            // metrics
+                            recordPermanentFailure(rec);
+                            rec.setNextAttemptAt(null);
+                        } else {
+                            rec.setNextAttemptAt(calculateNextAttempt(now, rec.getRetryCount()));
+                        }
                         transactionRepository.save(rec);
+                        balanceManager.rollback(account.getId(), rec.getAmount(), rec.getTxId());
                     }
+                } else {
+                    // reservation failed in Redis — increment retry and schedule next attempt
+                    rec.setRetryCount(retries + 1);
+                    rec.setError("Redis reserve failed: " + reserveResult);
+                    rec.setProcessedAt(Instant.now());
+                    if (rec.getRetryCount() >= maxRetries) {
+                        rec.setStatus("FAILED");
+                        log.error("Permanent failure reserving transaction {} after {} retries: {}", rec.getTxId(), rec.getRetryCount(), reserveResult);
+                        recordPermanentFailure(rec);
+                        rec.setNextAttemptAt(null);
+                    } else {
+                        rec.setNextAttemptAt(calculateNextAttempt(now, rec.getRetryCount()));
+                    }
+                    transactionRepository.save(rec);
                 }
-            } catch (Exception ex) {
-                // best effort: increment retry and persist
-                Integer rc = rec.getRetryCount() == null ? 0 : rec.getRetryCount();
-                rec.setRetryCount(rc + 1);
-                rec.setError(ex.getMessage());
+
+            } catch (Exception e) {
+                log.error("Unexpected error while reprocessing transaction {}: {}", rec.getTxId(), e.toString());
+                // increment retry, schedule next attempt
+                int rc = rec.getRetryCount() == null ? 1 : rec.getRetryCount() + 1;
+                rec.setRetryCount(rc);
                 rec.setProcessedAt(Instant.now());
+                rec.setError(e.getMessage());
+                if (rc >= maxRetries) {
+                    rec.setStatus("FAILED");
+                    log.error("Permanent failure reprocessing transaction {}: {}", rec.getTxId(), e.toString());
+                    recordPermanentFailure(rec);
+                    rec.setNextAttemptAt(null);
+                } else {
+                    rec.setNextAttemptAt(calculateNextAttempt(Instant.now(), rc));
+                }
                 transactionRepository.save(rec);
             }
+        }
+    }
+
+    Instant calculateNextAttempt(Instant now, int retryCount) {
+        long base = baseBackoffSeconds > 0 ? baseBackoffSeconds : 5L; // configurable base backoff seconds
+        long delay = base * (1L << Math.max(0, retryCount - 1)); // exponential: base * 2^(retryCount-1)
+        return now.plusSeconds(delay);
+    }
+
+    private void recordPermanentFailure(TransactionRecord rec) {
+        // Increment a counter for permanently failed transactions
+        if (meterRegistry != null) {
+            meterRegistry.counter("transaction.permanentFailure.count", "type", rec.getType()).increment();
         }
     }
 }
