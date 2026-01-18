@@ -1,0 +1,55 @@
+{{- $fullName := include "transaction-service-pilot.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ $fullName }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $fullName }}
+  template:
+    metadata:
+      labels:
+        app: {{ $fullName }}
+    spec:
+      containers:
+        - name: {{ $fullName }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.env.SPRING_DATASOURCE_URL | quote }}
+            - name: SPRING_DATASOURCE_USERNAME
+              value: {{ .Values.env.SPRING_DATASOURCE_USERNAME | quote }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: {{ .Values.env.SPRING_DATASOURCE_PASSWORD | quote }}
+            - name: SPRING_REDIS_HOST
+              value: {{ .Values.env.SPRING_REDIS_HOST | quote }}
+            - name: SPRING_REDIS_PORT
+              value: {{ .Values.env.SPRING_REDIS_PORT | quote }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
