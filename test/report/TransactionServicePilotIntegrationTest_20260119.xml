@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<integrationTestReport generatedAt="2026-01-19T14:01:23Z" date="2026-01-19">
+  <summary>
+    <totalTests>5</totalTests>
+    <passed>5</passed>
+    <failures>0</failures>
+    <errors>0</errors>
+    <coverage>100.00%</coverage>
+  </summary>
+  <testcases>
+    <testcase classname="org.pilot.transactionservicepilot.integration.TransactionIntegrationCreditTest" name="integrationCreditFlow" time="5.482">
+      <description />
+      <status>passed</status>
+      <sourceReport>TEST-org.pilot.transactionservicepilot.integration.TransactionIntegrationCreditTest.xml</sourceReport>
+      <message />
+      <systemOut>21:58:04.724 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.integration.TransactionIntegrationCreditTest]: TransactionIntegrationCreditTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:58:05.046 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.integration.TransactionIntegrationCreditTest
+21:58:05.598 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.1)
+
+2026-01-19T21:58:06.280+08:00  INFO 21144 --- [           main] o.p.t.i.TransactionIntegrationCreditTest : Starting TransactionIntegrationCreditTest using Java 17.0.4 with PID 21144 (started by Administrator in D:\shadow\TransactionServicePilot)
+2026-01-19T21:58:06.284+08:00  INFO 21144 --- [           main] o.p.t.i.TransactionIntegrationCreditTest : The following 1 profile is active: "test"
+2026-01-19T21:58:08.133+08:00  INFO 21144 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-01-19T21:58:08.138+08:00  INFO 21144 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-19T21:58:08.532+08:00  INFO 21144 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 370 ms. Found 2 JPA repository interfaces.
+2026-01-19T21:58:08.645+08:00  INFO 21144 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-01-19T21:58:08.648+08:00  INFO 21144 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-01-19T21:58:08.691+08:00  INFO 21144 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-01-19T21:58:08.692+08:00  INFO 21144 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-01-19T21:58:08.692+08:00  INFO 21144 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
+2026-01-19T21:58:09.780+08:00  INFO 21144 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-01-19T21:58:09.967+08:00  INFO 21144 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-01-19T21:58:11.452+08:00  INFO 21144 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-19T21:58:11.566+08:00  INFO 21144 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-19T21:58:12.276+08:00  INFO 21144 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2026-01-19T21:58:12.281+08:00  INFO 21144 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-19T21:58:12.460+08:00  INFO 21144 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:testdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: TESTDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-19T21:58:14.753+08:00  INFO 21144 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-19T21:58:14.898+08:00  INFO 21144 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-19T21:58:15.168+08:00  INFO 21144 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-19T21:58:18.663+08:00  WARN 21144 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-19T21:58:19.911+08:00  INFO 21144 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-01-19T21:58:20.081+08:00  INFO 21144 --- [           main] o.p.t.i.TransactionIntegrationCreditTest : Started TransactionIntegrationCreditTest in 14.516 seconds (process running for 18.164)</systemOut>
+    </testcase>
+    <testcase classname="org.pilot.transactionservicepilot.integration.TransactionIntegrationIdempotencyTest" name="integrationIdempotency" time="0.067">
+      <description />
+      <status>passed</status>
+      <sourceReport>TEST-org.pilot.transactionservicepilot.integration.TransactionIntegrationIdempotencyTest.xml</sourceReport>
+      <message />
+      <systemOut>2026-01-19T21:58:26.000+08:00  INFO 21144 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.integration.TransactionIntegrationIdempotencyTest]: TransactionIntegrationIdempotencyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-19T21:58:26.004+08:00  INFO 21144 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.integration.TransactionIntegrationIdempotencyTest</systemOut>
+    </testcase>
+    <testcase classname="org.pilot.transactionservicepilot.integration.TransactionIntegrationInsufficientFundsTest" name="integrationInsufficientFunds" time="0.031">
+      <description />
+      <status>passed</status>
+      <sourceReport>TEST-org.pilot.transactionservicepilot.integration.TransactionIntegrationInsufficientFundsTest.xml</sourceReport>
+      <message />
+      <systemOut>2026-01-19T21:58:26.089+08:00  INFO 21144 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.integration.TransactionIntegrationInsufficientFundsTest]: TransactionIntegrationInsufficientFundsTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-19T21:58:26.093+08:00  INFO 21144 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.integration.TransactionIntegrationInsufficientFundsTest</systemOut>
+    </testcase>
+    <testcase classname="org.pilot.transactionservicepilot.integration.TransactionIntegrationTest" name="integrationDebitFlow" time="0.028">
+      <description />
+      <status>passed</status>
+      <sourceReport>TEST-org.pilot.transactionservicepilot.integration.TransactionIntegrationTest.xml</sourceReport>
+      <message />
+      <systemOut>2026-01-19T21:58:26.143+08:00  INFO 21144 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.integration.TransactionIntegrationTest]: TransactionIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-19T21:58:26.147+08:00  INFO 21144 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.integration.TransactionIntegrationTest</systemOut>
+    </testcase>
+    <testcase classname="org.pilot.transactionservicepilot.integration.TransactionIntegrationTransferTest" name="integrationTransferFlow" time="0.048">
+      <description />
+      <status>passed</status>
+      <sourceReport>TEST-org.pilot.transactionservicepilot.integration.TransactionIntegrationTransferTest.xml</sourceReport>
+      <message />
+      <systemOut>2026-01-19T21:58:26.190+08:00  INFO 21144 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.integration.TransactionIntegrationTransferTest]: TransactionIntegrationTransferTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-19T21:58:26.192+08:00  INFO 21144 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.integration.TransactionIntegrationTransferTest</systemOut>
+    </testcase>
+  </testcases>
+</integrationTestReport>
