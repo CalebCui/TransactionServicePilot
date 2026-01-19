@@ -68,6 +68,13 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- Jedis for JMeter JSR223 samplers (if JMeter scripts check Redis) -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>4.3.1</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -156,6 +163,36 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- JMeter Maven plugin for CI-driven load tests (fixed configuration) -->
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.mysql</groupId>
+                        <artifactId>mysql-connector-j</artifactId>
+                        <version>8.0.33</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>redis.clients</groupId>
+                        <artifactId>jedis</artifactId>
+                        <version>4.3.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <testFilesDirectory>src/test/jmeter</testFilesDirectory>
+                    <resultsDirectory>target/jmeter/results</resultsDirectory>
+                    <generateReports>true</generateReports>
+                    <resultsFileFormat>jtl</resultsFileFormat>
+                    <propertiesUser>
+                        <!-- Provide host and port separately so JMeter HTTP Request sampler can use them -->
+                        <baseHost>localhost</baseHost>
+                        <basePort>8080</basePort>
+                        <accountId>1</accountId>
+                    </propertiesUser>
+                </configuration>
             </plugin>
         </plugins>
     </build>
