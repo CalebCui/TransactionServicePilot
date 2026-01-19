@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,6 +74,9 @@ public class TransactionPerformanceTest {
         ExecutorService exec = Executors.newFixedThreadPool(threads);
         List<Callable<TransactionResponse>> tasks = new ArrayList<>();
 
+        // thread-safe collection to store per-sample results (time,latency_ms,success)
+        List<String> samples = Collections.synchronizedList(new ArrayList<>());
+
         for (int t = 0; t < threads; t++) {
             for (int i = 0; i < txsPerThread; i++) {
                 final String txId = "perf-" + t + "-" + i + "-" + UUID.randomUUID();
@@ -83,7 +87,21 @@ public class TransactionPerformanceTest {
                     req.setType("DEBIT");
                     req.setAmount(amount);
                     req.setCurrency("USD");
-                    return transactionService.process(req);
+
+                    long startNs = System.nanoTime();
+                    boolean success = false;
+                    try {
+                        TransactionResponse resp = transactionService.process(req);
+                        if (resp != null && "COMMITTED".equalsIgnoreCase(resp.getStatus())) {
+                            success = true;
+                        }
+                        return resp;
+                    } finally {
+                        long latencyMs = (System.nanoTime() - startNs) / 1_000_000L;
+                        long ts = System.currentTimeMillis();
+                        // CSV line: time,latency,success
+                        samples.add(ts + "," + latencyMs + "," + (success ? "true" : "false"));
+                    }
                 });
             }
         }
@@ -95,23 +113,14 @@ public class TransactionPerformanceTest {
         Instant end = Instant.now();
 
         long durationMs = Duration.between(start, end).toMillis();
+
+        // compute committed/failed from samples collected (safer in presence of ExecutionException)
         int committed = 0;
         int failed = 0;
-
-        // Instead of letting one ExecutionException fail the whole test, count failures
-        for (Future<TransactionResponse> f : futures) {
-            try {
-                TransactionResponse r = f.get();
-                if (r != null && "COMMITTED".equalsIgnoreCase(r.getStatus())) committed++;
+        synchronized (samples) {
+            for (String s : samples) {
+                if (s.endsWith(",true")) committed++;
                 else failed++;
-            } catch (ExecutionException ee) {
-                // record as failure and continue
-                failed++;
-                System.err.println("Task failed: " + ee.getCause());
-            } catch (InterruptedException ie) {
-                failed++;
-                Thread.currentThread().interrupt();
-                System.err.println("Task interrupted: " + ie.getMessage());
             }
         }
 
@@ -140,6 +149,17 @@ public class TransactionPerformanceTest {
             );
             Files.write(outFile, json.getBytes(StandardCharsets.UTF_8));
             System.out.println("Wrote perf summary to: " + outFile.toAbsolutePath());
+
+            // write per-sample CSV (JTL-like) to target/perf-results/perf-samples.jtl
+            Path samplesFile = outDir.resolve("perf-samples.jtl");
+            List<String> outLines = new ArrayList<>();
+            outLines.add("time,latency,success");
+            synchronized (samples) {
+                outLines.addAll(samples);
+            }
+            Files.write(samplesFile, String.join(System.lineSeparator(), outLines).getBytes(StandardCharsets.UTF_8));
+            System.out.println("Wrote per-sample results to: " + samplesFile.toAbsolutePath());
+
         } catch (Exception e) {
             System.err.println("Failed to write perf summary: " + e.getMessage());
         }
