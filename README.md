@@ -123,7 +123,3 @@ Where to find design and further docs
 
 - `DESIGN.md` - high-level design and component interactions
 - `docs/DEPLOYMENT.md` - deployment notes
-
-Contact / Next steps
-
-Tell me which item you'd like me to implement first (e.g., update `SyncScheduler`, add metrics, run tests and generate reports). I will proceed step-by-step and check with you after each change.
