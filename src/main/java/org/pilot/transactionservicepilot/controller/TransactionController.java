@@ -45,24 +45,26 @@ public class TransactionController {
             BigDecimal cached = balanceManager.getBalance(id);
             BigDecimal available = balanceManager.getAvailable(id);
             if (cached != null) {
-                return ResponseEntity.ok(Map.of(
-                        "accountId", id,
-                        "balance", cached,
-                        "available", available,
-                        "currency", accountRepository.findById(id).map(Account::getCurrency).orElse(null)
-                ));
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("accountId", id);
+                map.put("balance", cached);
+                map.put("available", available);
+                map.put("currency", accountRepository.findById(id).map(Account::getCurrency).orElse(null));
+                return ResponseEntity.ok(map);
             }
         } catch (Exception e) {
             // ignore cache errors and fallback to DB
         }
 
         return accountRepository.findById(id)
-                .map(a -> ResponseEntity.ok(Map.of(
-                        "accountId", a.getId(),
-                        "balance", a.getBalance(),
-                        "available", a.getAvailableBalance(),
-                        "currency", a.getCurrency()
-                )))
+                .map(a -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("accountId", a.getId());
+                    map.put("balance", a.getBalance());
+                    map.put("available", a.getAvailableBalance());
+                    map.put("currency", a.getCurrency());
+                    return ResponseEntity.ok(map);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }
