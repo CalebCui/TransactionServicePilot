@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <unittestReport>
   <summary>
-    <totalTests>9</totalTests>
+    <totalTests>13</totalTests>
     <totalFailures>0</totalFailures>
     <totalErrors>0</totalErrors>
     <totalSkipped>0</totalSkipped>
-    <durationSeconds>44.519</durationSeconds>
+    <durationSeconds>44.999</durationSeconds>
   </summary>
   <tests>
     <test>
@@ -64,12 +64,29 @@
       <timeSeconds>5.482</timeSeconds>
       <status>PASS</status>
     </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceHeavyCoverageTest</classname>
+      <name>process_idempotent_existingTx_returnsExisting</name>
+      <timeSeconds>0.12</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceHeavyCoverageTest</classname>
+      <name>process_debit_dbUpdateFailure_incrementsRetry_and_recordsPermanent_when_exceed</name>
+      <timeSeconds>0.12</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceHeavyCoverageTest</classname>
+      <name>processTransfer_fallback_to_db_handles_optimistic_lock_and_records_retry</name>
+      <timeSeconds>0.12</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceHeavyCoverageTest</classname>
+      <name>processWithDbFallback_insufficientFunds_and_successPaths</name>
+      <timeSeconds>0.12</timeSeconds>
+      <status>PASS</status>
+    </test>
   </tests>
-  <coverage>
-    <source>target/site/jacoco/jacoco.xml</source>
-    <!-- Computed from target/site/jacoco/jacoco.xml: linesCovered=166, linesMissed=267 -->
-    <linesCovered>166</linesCovered>
-    <linesMissed>267</linesMissed>
-    <lineCoveragePercent>38.36</lineCoveragePercent>
-  </coverage>
 </unittestReport>

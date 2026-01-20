@@ -1,0 +1,17 @@
+JaCoCo Coverage Summary — TransactionServicePilot
+Source: target/site/jacoco/jacoco.xml
+Generated: 2026-01-20
+
+Overall coverage (report totals):
+- INSTRUCTION: missed=577, covered=1730, total=2307, coverage=75.0%
+- BRANCH:      missed=47,  covered=99,   total=146,  coverage=67.8%
+- LINE:        missed=96,  covered=365,  total=461,  coverage=79.2%
+- COMPLEXITY:  missed=42,  covered=71,   total=113,  coverage=62.8%
+- METHOD:      missed=1,   covered=39,   total=40,   coverage=97.5%
+- CLASS:       missed=0,   covered=9,    total=9,    coverage=100.0%
+
+Quick notes:
+- Line coverage is about 79.2% (365/461) — most user-facing logic lines are covered, but there are ~96 lines not executed by tests.
+- Branch coverage (67.8%) indicates conditional branches need more tests (47 branches missed).
+- Complexity coverage (62.8%) suggests high-complexity code paths are under-tested.
+
