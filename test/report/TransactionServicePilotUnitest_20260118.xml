@@ -1,304 +1,75 @@
-<?xml version='1.0' encoding='utf-8'?>
-<unittestReport generatedAt="2026-01-18T13:17:16Z" date="2026-01-18">
+<?xml version="1.0" encoding="UTF-8"?>
+<unittestReport>
   <summary>
     <totalTests>9</totalTests>
-    <passed>9</passed>
-    <failures>0</failures>
-    <errors>0</errors>
-    <coverage>N/A</coverage>
+    <totalFailures>0</totalFailures>
+    <totalErrors>0</totalErrors>
+    <totalSkipped>0</totalSkipped>
+    <durationSeconds>44.519</durationSeconds>
   </summary>
-  <testcases>
-    <testcase classname="org.pilot.transactionservicepilot.TransactionServicePilotApplicationTests" name="contextLoads" time="0.008">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.TransactionServicePilotApplicationTests.xml</sourceReport>
-      <message />
-      <systemOut>2026-01-18T21:16:48.278+08:00  INFO 16876 --- [TransactionServicePilot] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.TransactionServicePilotApplicationTests]: TransactionServicePilotApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-01-18T21:16:48.300+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.TransactionServicePilotApplicationTests
-2026-01-18T21:16:48.313+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.1)
-
-2026-01-18T21:16:48.362+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .TransactionServicePilotApplicationTests : Starting TransactionServicePilotApplicationTests using Java 17.0.4 with PID 16876 (started by Administrator in D:\shadow\TransactionServicePilot)
-2026-01-18T21:16:48.363+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .TransactionServicePilotApplicationTests : The following 1 profile is active: "local"
-2026-01-18T21:16:48.758+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:48.759+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-01-18T21:16:48.793+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 30 ms. Found 2 JPA repository interfaces.
-2026-01-18T21:16:48.808+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:48.808+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-01-18T21:16:48.823+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:48.824+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:48.824+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
-2026-01-18T21:16:49.014+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-01-18T21:16:49.071+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-01-18T21:16:49.073+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
-2026-01-18T21:16:49.081+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection com.mysql.cj.jdbc.ConnectionImpl@60c69660
-2026-01-18T21:16:49.082+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
-2026-01-18T21:16:49.085+08:00  WARN 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-01-18T21:16:49.087+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/Transactions?useSSL=false&amp;serverTimezone=UTC]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.28
-	Default catalog/schema: Transactions/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-01-18T21:16:49.167+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-01-18T21:16:49.185+08:00  INFO 16876 --- [TransactionServicePilot] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-01-18T21:16:49.448+08:00  WARN 16876 --- [TransactionServicePilot] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-01-18T21:16:49.760+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2026-01-18T21:16:49.793+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .TransactionServicePilotApplicationTests : Started TransactionServicePilotApplicationTests in 1.481 seconds (process running for 46.566)</systemOut>
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.integration.TransactionIntegrationTest" name="integrationDebitFlow" time="7.93">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.integration.TransactionIntegrationTest.xml</sourceReport>
-      <message />
-      <systemOut>21:16:04.867 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.integration.TransactionIntegrationTest]: TransactionIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-21:16:05.035 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.integration.TransactionIntegrationTest
-21:16:05.324 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.1)
-
-2026-01-18T21:16:05.756+08:00  INFO 16876 --- [           main] o.p.t.i.TransactionIntegrationTest       : Starting TransactionIntegrationTest using Java 17.0.4 with PID 16876 (started by Administrator in D:\shadow\TransactionServicePilot)
-2026-01-18T21:16:05.760+08:00  INFO 16876 --- [           main] o.p.t.i.TransactionIntegrationTest       : The following 1 profile is active: "test"
-2026-01-18T21:16:07.072+08:00  INFO 16876 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:07.075+08:00  INFO 16876 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-01-18T21:16:07.312+08:00  INFO 16876 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 216 ms. Found 2 JPA repository interfaces.
-2026-01-18T21:16:07.382+08:00  INFO 16876 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:07.384+08:00  INFO 16876 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-01-18T21:16:07.418+08:00  INFO 16876 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:07.419+08:00  INFO 16876 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:07.419+08:00  INFO 16876 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
-2026-01-18T21:16:08.259+08:00  INFO 16876 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-01-18T21:16:08.368+08:00  INFO 16876 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
-2026-01-18T21:16:09.358+08:00  INFO 16876 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-01-18T21:16:09.416+08:00  INFO 16876 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-01-18T21:16:09.734+08:00  INFO 16876 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
-2026-01-18T21:16:09.737+08:00  INFO 16876 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-01-18T21:16:09.833+08:00  INFO 16876 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:h2:mem:testdb]
-	Database driver: H2 JDBC Driver
-	Database dialect: H2Dialect
-	Database version: 2.4.240
-	Default catalog/schema: TESTDB/PUBLIC
-	Autocommit mode: undefined/unknown
-	Isolation level: READ_COMMITTED [default READ_COMMITTED]
-	JDBC fetch size: 100
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-01-18T21:16:11.334+08:00  INFO 16876 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-01-18T21:16:11.415+08:00  INFO 16876 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-01-18T21:16:11.586+08:00  INFO 16876 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-01-18T21:16:13.978+08:00  WARN 16876 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-01-18T21:16:15.657+08:00  INFO 16876 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
-2026-01-18T21:16:15.813+08:00  INFO 16876 --- [           main] o.p.t.i.TransactionIntegrationTest       : Started TransactionIntegrationTest in 10.509 seconds (process running for 12.586)</systemOut>
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.perf.TransactionPerformanceTest" name="concurrentTransactionThroughput" time="11.435">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.perf.TransactionPerformanceTest.xml</sourceReport>
-      <message />
-      <systemOut>2026-01-18T21:16:24.167+08:00  INFO 16876 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.perf.TransactionPerformanceTest]: TransactionPerformanceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-01-18T21:16:24.337+08:00  INFO 16876 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.perf.TransactionPerformanceTest
-2026-01-18T21:16:24.573+08:00  INFO 16876 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.1)
-
-2026-01-18T21:16:24.681+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.p.t.perf.TransactionPerformanceTest    : Starting TransactionPerformanceTest using Java 17.0.4 with PID 16876 (started by Administrator in D:\shadow\TransactionServicePilot)
-2026-01-18T21:16:24.681+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.p.t.perf.TransactionPerformanceTest    : The following 1 profile is active: "local"
-2026-01-18T21:16:25.637+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:25.638+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-01-18T21:16:25.743+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 98 ms. Found 2 JPA repository interfaces.
-2026-01-18T21:16:25.772+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:25.773+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-01-18T21:16:25.799+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:25.800+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:25.801+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 0 Redis repository interfaces.
-2026-01-18T21:16:26.369+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-01-18T21:16:26.441+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-01-18T21:16:26.446+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
-2026-01-18T21:16:26.780+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@e068d7
-2026-01-18T21:16:26.780+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
-2026-01-18T21:16:26.829+08:00  WARN 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-01-18T21:16:26.834+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/Transactions?useSSL=false&amp;serverTimezone=UTC]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.28
-	Default catalog/schema: Transactions/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-01-18T21:16:26.927+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-01-18T21:16:26.992+08:00  INFO 16876 --- [TransactionServicePilot] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-01-18T21:16:27.237+08:00  WARN 16876 --- [TransactionServicePilot] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-01-18T21:16:27.584+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2026-01-18T21:16:27.618+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.p.t.perf.TransactionPerformanceTest    : Started TransactionPerformanceTest in 3.045 seconds (process running for 24.389)
------ PERFORMANCE TEST SUMMARY -----
-Threads: 10, TXs/thread: 100, Total TXs: 1000
-Amount per TX: 1.00
-Duration ms: 11370
-Committed: 1000, Failed: 0
-Throughput (committed tx/s): 87.95
-------------------------------------
-Wrote perf summary to: D:\shadow\TransactionServicePilot\target\perf-results\perf-summary-latest.json</systemOut>
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.service.TransactionServiceBackoffTest" name="calculateNextAttempt_exponentialBackoff" time="1.015">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.service.TransactionServiceBackoffTest.xml</sourceReport>
-      <message />
-      <systemOut />
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.service.TransactionServiceMetricsTest" name="permanentFailureIncrementsMetric" time="1.268">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.service.TransactionServiceMetricsTest.xml</sourceReport>
-      <message />
-      <systemOut>2026-01-18T21:16:41.073+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.service.TransactionServiceMetricsTest
-2026-01-18T21:16:41.104+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.1)
-
-2026-01-18T21:16:41.227+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.p.t.s.TransactionServiceMetricsTest    : Starting TransactionServiceMetricsTest using Java 17.0.4 with PID 16876 (started by Administrator in D:\shadow\TransactionServicePilot)
-2026-01-18T21:16:41.229+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.p.t.s.TransactionServiceMetricsTest    : The following 1 profile is active: "local"
-2026-01-18T21:16:42.013+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:42.014+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-01-18T21:16:42.059+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 39 ms. Found 2 JPA repository interfaces.
-2026-01-18T21:16:42.096+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:42.097+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-01-18T21:16:42.116+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:42.117+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:42.118+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 0 Redis repository interfaces.
-2026-01-18T21:16:42.638+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-01-18T21:16:42.725+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-01-18T21:16:42.731+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
-2026-01-18T21:16:42.762+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5a0d2ed8
-2026-01-18T21:16:42.764+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
-2026-01-18T21:16:42.769+08:00  WARN 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-01-18T21:16:42.772+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/Transactions?useSSL=false&amp;serverTimezone=UTC]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.28
-	Default catalog/schema: Transactions/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-01-18T21:16:42.908+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-01-18T21:16:42.945+08:00  INFO 16876 --- [TransactionServicePilot] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-01-18T21:16:43.509+08:00  WARN 16876 --- [TransactionServicePilot] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-01-18T21:16:44.352+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2026-01-18T21:16:44.473+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.p.t.s.TransactionServiceMetricsTest    : Started TransactionServiceMetricsTest in 3.37 seconds (process running for 41.245)
-2026-01-18T21:16:46.067+08:00 ERROR 16876 --- [TransactionServicePilot] [           main] o.p.t.service.TransactionService         : Permanent failure processing transaction tx-metric-13ccd69f-64c2-4128-a933-540066fa07eb: account 999999 not found after 3 retries</systemOut>
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.service.TransactionServiceOptimisticLockTest" name="optimisticLockDuringDbFallbackTriggersRetryAndBackoff" time="0.139">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.service.TransactionServiceOptimisticLockTest.xml</sourceReport>
-      <message />
-      <systemOut>2026-01-18T21:16:46.179+08:00  INFO 16876 --- [TransactionServicePilot] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.pilot.transactionservicepilot.service.TransactionServiceOptimisticLockTest]: TransactionServiceOptimisticLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-01-18T21:16:46.194+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.pilot.transactionservicepilot.TransactionServicePilotApplication for test class org.pilot.transactionservicepilot.service.TransactionServiceOptimisticLockTest
-2026-01-18T21:16:46.221+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.1)
-
-2026-01-18T21:16:46.294+08:00  INFO 16876 --- [TransactionServicePilot] [           main] t.s.TransactionServiceOptimisticLockTest : Starting TransactionServiceOptimisticLockTest using Java 17.0.4 with PID 16876 (started by Administrator in D:\shadow\TransactionServicePilot)
-2026-01-18T21:16:46.296+08:00  INFO 16876 --- [TransactionServicePilot] [           main] t.s.TransactionServiceOptimisticLockTest : The following 1 profile is active: "local"
-2026-01-18T21:16:46.724+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:46.725+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-01-18T21:16:46.753+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 24 ms. Found 2 JPA repository interfaces.
-2026-01-18T21:16:46.769+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-01-18T21:16:46.769+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-01-18T21:16:46.783+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:46.784+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface org.pilot.transactionservicepilot.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-01-18T21:16:46.784+08:00  INFO 16876 --- [TransactionServicePilot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
-2026-01-18T21:16:46.989+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-01-18T21:16:47.051+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-01-18T21:16:47.054+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
-2026-01-18T21:16:47.068+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@39946f0
-2026-01-18T21:16:47.069+08:00  INFO 16876 --- [TransactionServicePilot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
-2026-01-18T21:16:47.072+08:00  WARN 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-01-18T21:16:47.074+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/Transactions?useSSL=false&amp;serverTimezone=UTC]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.28
-	Default catalog/schema: Transactions/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-01-18T21:16:47.154+08:00  INFO 16876 --- [TransactionServicePilot] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-01-18T21:16:47.174+08:00  INFO 16876 --- [TransactionServicePilot] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-01-18T21:16:47.385+08:00  WARN 16876 --- [TransactionServicePilot] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-01-18T21:16:47.679+08:00  INFO 16876 --- [TransactionServicePilot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2026-01-18T21:16:47.719+08:00  INFO 16876 --- [TransactionServicePilot] [           main] t.s.TransactionServiceOptimisticLockTest : Started TransactionServiceOptimisticLockTest in 1.499 seconds (process running for 44.491)
-2026-01-18T21:16:48.100+08:00 ERROR 16876 --- [TransactionServicePilot] [           main] o.p.t.service.TransactionService         : Permanent failure processing transaction tx-metric-13ccd69f-64c2-4128-a933-540066fa07eb: account 999999 not found after 4 retries</systemOut>
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.service.TransactionServiceReprocessFlowTest" name="reprocessPending_accountNotFound_retriesAndThenPermanentFail" time="0.087">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.service.TransactionServiceReprocessFlowTest.xml</sourceReport>
-      <message />
-      <systemOut>after1 retry=1 status=PENDING nextAttemptAt=2026-01-18T13:16:53.221986900Z
-after2 retry=2 status=PENDING nextAttemptAt=2026-01-18T13:16:58.226982Z
-2026-01-18T21:16:48.226+08:00 ERROR 16876 --- [TransactionServicePilot] [           main] o.p.t.service.TransactionService         : Permanent failure processing transaction tx-1: account 42 not found after 3 retries
-after3 retry=3 status=FAILED nextAttemptAt=null</systemOut>
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.service.TransactionServiceTest" name="testInsufficientFunds" time="0.008">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.service.TransactionServiceTest.xml</sourceReport>
-      <message />
-      <systemOut />
-    </testcase>
-    <testcase classname="org.pilot.transactionservicepilot.service.TransactionServiceTest" name="testSuccessfulDebit" time="0.009">
-      <status>passed</status>
-      <sourceReport>TEST-org.pilot.transactionservicepilot.service.TransactionServiceTest.xml</sourceReport>
-      <message />
-      <systemOut />
-    </testcase>
-  </testcases>
+  <tests>
+    <test>
+      <classname>org.pilot.transactionservicepilot.integration.TransactionIntegrationTest</classname>
+      <name>integrationDebitFlow</name>
+      <timeSeconds>17.89</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.perf.TransactionPerformanceTest</classname>
+      <name>performanceRun</name>
+      <timeSeconds>13.97</timeSeconds>
+      <status>PASS</status>
+      <notes>Perf summary written to target/perf-results/perf-summary-latest.json</notes>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceBackoffTest</classname>
+      <name>backoffBehavior</name>
+      <timeSeconds>0.989</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceMetricsTest</classname>
+      <name>metricsBehavior</name>
+      <timeSeconds>2.966</timeSeconds>
+      <status>PASS</status>
+      <notes>Logs contain permanent failure message for negative-path verification</notes>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceOptimisticLockTest</classname>
+      <name>optimisticLocking</name>
+      <timeSeconds>1.669</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceReprocessFlowTest</classname>
+      <name>reprocessFlow</name>
+      <timeSeconds>0.095</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.service.TransactionServiceTest</classname>
+      <name>unitServiceTests</name>
+      <timeSeconds>0.018</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.TransactionServicePilotApplicationTests</classname>
+      <name>applicationContextLoads</name>
+      <timeSeconds>1.369</timeSeconds>
+      <status>PASS</status>
+    </test>
+    <test>
+      <classname>org.pilot.transactionservicepilot.integration.TransactionIntegrationCreditTest</classname>
+      <name>integrationCreditFlow</name>
+      <timeSeconds>5.482</timeSeconds>
+      <status>PASS</status>
+    </test>
+  </tests>
+  <coverage>
+    <source>target/site/jacoco/jacoco.xml</source>
+    <!-- Computed from target/site/jacoco/jacoco.xml: linesCovered=166, linesMissed=267 -->
+    <linesCovered>166</linesCovered>
+    <linesMissed>267</linesMissed>
+    <lineCoveragePercent>38.36</lineCoveragePercent>
+  </coverage>
 </unittestReport>
