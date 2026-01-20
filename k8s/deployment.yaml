@@ -13,7 +13,23 @@ spec:
     metadata:
       labels:
         app: transaction-service-pilot
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - transaction-service-pilot
       containers:
         - name: transaction-service-pilot
           image: ghcr.io/your-org/transaction-service-pilot:latest
@@ -50,6 +66,19 @@ spec:
             - name: JAVA_OPTS
               value: "-Xms256m -Xmx512m"
       restartPolicy: Always
+# Optional Flyway initContainer example (recommended to run migrations from CI pipeline instead):
+# initContainers:
+#   - name: flyway-migrate
+#     image: flyway/flyway:9
+#     envFrom:
+#       - configMapRef:
+#           name: transaction-service-config
+#       - secretRef:
+#           name: transaction-service-secret
+#     command: ["/bin/sh", "-c"]
+#     # This assumes migration SQL files are baked into the image OR mounted via a volume.
+#     args:
+#       - flyway -url="$SPRING_DATASOURCE_URL" -user="$SPRING_DATASOURCE_USERNAME" -password="$SPRING_DATASOURCE_PASSWORD" migrate
 ---
 apiVersion: v1
 kind: Service
@@ -71,12 +100,25 @@ kind: ConfigMap
 metadata:
   name: transaction-service-config
 data:
+  # Profiles
   SPRING_PROFILES_ACTIVE: "k8s,prod"
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/Transactions?useSSL=false&serverTimezone=UTC"
-  SPRING_DATASOURCE_USERNAME: "root"
-  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
+
+  # Database connection - TEMPLATE: replace <RDS_HOST> with your Alibaba RDS endpoint (do NOT put password here)
+  # Example: jdbc:mysql://your-rds-endpoint.rds.aliyuncs.com:3306/Transactions?useSSL=true&serverTimezone=UTC
+  SPRING_DATASOURCE_URL: "jdbc:mysql://<RDS_HOST>:3306/Transactions?useSSL=true&serverTimezone=UTC"
+  SPRING_DATASOURCE_USERNAME: "app_user" # optionally move to Secret
+
+  # Redis connection (host/port only, password in Secret)
   SPRING_REDIS_HOST: "redis"
   SPRING_REDIS_PORT: "6379"
+
+  # Hikari (connection pool) tuning - adjust according to RDS max_connections and replica count
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "30"
+  SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: "10"
+  SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT_MS: "30000"
+  SPRING_DATASOURCE_HIKARI_MAX_LIFETIME_MS: "1800000"
+
+  # SyncScheduler settings
   APP_SYNC_BASE_BACKOFF_SECONDS: "5"
   APP_SYNC_MAX_RETRIES: "3"
 ---
@@ -86,5 +128,8 @@ metadata:
   name: transaction-service-secret
 type: Opaque
 stringData:
-  spring_datasource_password: "REPLACE_WITH_DB_PASSWORD"
-  spring_redis_password: ""
+  # Keep credentials out of the repo; replace with secure values in CI or use Alibaba Secrets Manager.
+  SPRING_DATASOURCE_PASSWORD: "REPLACE_WITH_DB_PASSWORD"
+  SPRING_REDIS_PASSWORD: ""
+  # Optionally put username here instead of ConfigMap:
+  # SPRING_DATASOURCE_USERNAME: "app_user"

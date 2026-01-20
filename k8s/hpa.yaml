@@ -22,3 +22,7 @@ spec:
         target:
           type: Utilization
           averageUtilization: 70
+
+# Note: For transaction-throughput based autoscaling, consider using KEDA or the Prometheus Adapter
+# to expose a custom metric (e.g., transaction_throughput) to the Kubernetes Custom Metrics API.
+# Example: use KEDA ScaledObject to scale based on Prometheus query or custom external metric.

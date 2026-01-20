@@ -1,0 +1,48 @@
+# Flyway Job: runs DB migrations in-cluster using migration SQL mounted from a ConfigMap
+# Usage:
+# 1. Create a ConfigMap with your migration SQL files:
+#    kubectl create configmap flyway-sql --from-file=./sql
+# 2. Ensure transaction-service-config ConfigMap contains SPRING_DATASOURCE_URL and SPRING_DATASOURCE_USERNAME
+#    and transaction-service-secret contains SPRING_DATASOURCE_PASSWORD
+# 3. Run: kubectl apply -f k8s/flyway-job.yaml
+# 4. Watch logs: kubectl logs -f job/flyway-migrate
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: flyway-migrate
+  labels:
+    app: flyway
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      name: flyway-migrate
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: flyway
+          # Official Flyway image
+          image: flyway/flyway:9
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: transaction-service-config
+            - secretRef:
+                name: transaction-service-secret
+          volumeMounts:
+            - name: flyway-sql
+              mountPath: /flyway/sql
+              readOnly: true
+          # Use a shell so environment variables inside args are expanded
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Starting Flyway migration...";
+              ls -la /flyway/sql || true;
+              flyway -locations=filesystem:/flyway/sql -url="$SPRING_DATASOURCE_URL" -user="$SPRING_DATASOURCE_USERNAME" -password="$SPRING_DATASOURCE_PASSWORD" migrate;
+      volumes:
+        - name: flyway-sql
+          configMap:
+            name: flyway-sql
+            # optional: defaultMode: 0444
